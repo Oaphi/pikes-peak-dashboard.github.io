@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pikes Peak Auto Detail</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <style>
+:root {
+    --gap-v: 2vh;
+    --gap-h: 2vw;
+    --theme-font: Roboto, Arial, sans-serif;
+    --theme-primary: rgb(41, 170, 227);
+    --theme-err: #d32f2f;
+    --sigin-pad: 8px;
+    --font-base: 0.8rem;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family: var(--theme-font);
+}
+
+.horizontal-container, .vertical-container {
+    display: flex;
+    align-items: center;
+}
+
+.horizontal-container {
+    flex-direction: row;
+    gap: var(--gap-h);
+}
+
+.vertical-container {
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--gap-v);
+    height: 100%;
+}
+
+.vertical-container>* {
+    width: 230px;
+}
+
+.logo-container {
+    text-align: center;
+}
+
+.logo-container>img {
+    width: 180px;
+}
+
+.abcRioButton {
+    width: 100% !important;
+}
+
+.signin-logo {
+    height: 30px;
+    background: url('/identity/sign-in/g-normal.png') transparent 5px 50% no-repeat;
+}
+
+.signin-logo img {
+    width: 30px;
+}
+
+.signin-button {
+    border: none;
+    width: 100%;
+    height: 48px;
+    padding: var(--sigin-pad);
+    background-color: var(--theme-primary);
+    color: white;
+    font-size: calc(var(--font-base) * 1.2);
+}
+
+.signin-button:hover {
+    background-color: var(--theme-secondary);
+}
+
+.signin-desc {
+    font-size: var(--font-base);
+    font-weight: 600;
+    color: rgba(0,0,0,0.5);
+}
+
+.signin-option {
+    gap: var(--sigin-pad);
+    border: 1px solid rgba(0,0,0,0.25);
+    padding: var(--sigin-pad);
+}
+
+.signin-option.failed {
+    pointer-events: none;
+    border-color: var(--theme-err);
+}
+
+.signin-option.failed .signin-desc {
+    color: var(--theme-err);
+}
+
+.signin-option:hover {
+    cursor: pointer;
+}
+
+.signin-option:active, 
+.signin-option:hover {
+    border-color: var(--theme-primary);
+}
+
+.signin-option:active > *,
+.signin-option:hover > * {
+    color: var(--theme-primary);
+}
+</style>
+    <style>
+span.badge.new {
+    width: 100%;
+    margin: 0 0 8px 0;
+}
+
+/* unifies overall collapsible style with table row/cell */
+td .collapsible {
+    box-shadow: none;
+    border: none;
+    margin: 0;
+}
+
+.keyboard-focused .collapsible-header:focus {
+    background: inherit;
+}
+
+/* beautifies report table captions (slightly elevated headers) */
+table caption {
+    margin-bottom: 1vh;
+    text-align: left;
+    font-size: 1.5rem;
+    padding: 0.5vh;
+}
+
+/* adds borders to grids inside collapsibles inside table cells for readability */
+td .collapsible .col {
+    border: 1px solid #ddd;
+    border-width: 0 0 0 1px;
+}
+
+/* fixes background if :hover is set on row/cell */
+td .collapsible-header {
+    background: inherit;
+}
+
+/* theme button focus state background-color */
+button:focus {
+    background-color: var(--theme-primary);
+}
+
+/* theme background-color */
+.btn,
+.datepicker-date-display,
+.progress .indeterminate {
+    background-color: var(--theme-primary);
+}
+
+/* theme button hover/focus background-color */
+.btn:hover,
+.btn-large:hover,
+.btn-small:hover,
+.btn:focus,
+.btn-large:focus,
+.btn-small:focus,
+.btn-floating:focus {
+    background-color: var(--theme-secondary);
+}
+
+/* theme focus transparent background-color */
+.datepicker-day-button:focus {
+    background-color: var(--theme-primary-transparent);
+}
+
+/* theme datepicker selected date background-color */
+.datepicker-table td.is-selected {
+    background-color: var(--theme-primary);
+}
+
+/* theme text color for components */
+.btn-flat,
+.done,
+.datepicker-table td.is-today,
+.dropdown-content li > a,
+.dropdown-content li > span,
+.secondary-content,
+.input-field .prefix.active {
+    color: var(--theme-primary);
+}
+
+/* theme select bottom underlining on focus */
+.select-wrapper input.select-dropdown:focus {
+    border-bottom: 1px solid var(--theme-primary);
+}
+
+/* theme background color of the right part of the checkmark */
+input[type="checkbox"].filled-in:checked + span:not(.lever):after {
+    border: 2px solid var(--theme-primary);
+    background-color: var(--theme-primary);
+}
+
+/* theme background color of the left part of the checkmark */
+input[type="checkbox"]:checked + span:not(.lever):before {
+    border-right: 2px solid var(--theme-primary);
+    border-bottom: 2px solid var(--theme-primary);
+}
+
+/* input focus underline color */
+input:not([type]):focus:not([readonly]),
+input[type="text"]:not(.browser-default):focus:not([readonly]),
+input[type="password"]:not(.browser-default):focus:not([readonly]),
+input[type="email"]:not(.browser-default):focus:not([readonly]),
+input[type="url"]:not(.browser-default):focus:not([readonly]),
+input[type="time"]:not(.browser-default):focus:not([readonly]),
+input[type="date"]:not(.browser-default):focus:not([readonly]),
+input[type="datetime"]:not(.browser-default):focus:not([readonly]),
+input[type="datetime-local"]:not(.browser-default):focus:not([readonly]),
+input[type="tel"]:not(.browser-default):focus:not([readonly]),
+input[type="number"]:not(.browser-default):focus:not([readonly]),
+input[type="search"]:not(.browser-default):focus:not([readonly]),
+textarea.materialize-textarea:focus:not([readonly]) {
+    border-bottom: 1px solid var(--theme-primary);
+    box-shadow: 0 1px 0 0 var(--theme-primary);
+}
+
+/* input focus label color */
+input:not([type]):focus:not([readonly]) + label,
+input[type="text"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="password"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="email"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="url"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="time"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="date"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="datetime"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="datetime-local"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="tel"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="number"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="search"]:not(.browser-default):focus:not([readonly]) + label,
+textarea.materialize-textarea:focus:not([readonly]) + label {
+    color: var(--theme-primary);
+}
+
+</style>
+    <style>
+.removed {
+    display: none;
+}
+
+.fullvw {
+    width: 100vw;
+}
+
+.fullvh {
+    height: 100vh;
+}
+
+.wrapping {
+    flex-wrap: wrap;
+}
+
+.color-trans {
+    transition: color var(--animation-normal);
+}
+
+.success {
+    background-color: var(--theme-primary);
+}
+
+.text-success {
+    color: var(--theme-primary);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.warning {
+    background-color: var(--theme-warn);
+}
+
+.text-warning {
+    color: var(--theme-warn);
+}
+
+.failure {
+    background-color: var(--theme-err);
+}
+
+/* applies a filter that inverts black and white parts of the image */
+.bw-invert {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* scales element down to 3/4 */
+.scale-3-4 {
+    transform: scale(0.75);
+}
+
+.text-failure {
+    color: var(--theme-err);
+}
+
+.clear-btn {
+    opacity: 0;
+    transition: opacity 0.2s linear;
+}
+
+/* offsets buttons on icon inputs */
+i + input ~ button {
+    left: var(--icon-width);
+}
+
+.loading:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(4, end) var(--animation-slow) infinite;
+            animation: ellipsis steps(4, end) var(--animation-slow) infinite;
+    content: "\2026"; /* ascii code for the ellipsis character */
+    width: 0px;
+}
+
+/* for elements with camelcase text */
+.camelcase::first-letter {
+    text-transform: uppercase;
+}
+.camelcase:not(::first-letter) {
+    text-transform: lowercase;
+}
+
+/* for elements with uppercase text */
+.uppercase {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* for textual annotation elements */
+.annotation.annotation {
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+}
+
+@-webkit-keyframes ellipsis {
+    to {
+        width: 1em;
+    }
+}
+
+@keyframes ellipsis {
+    to {
+        width: 1em;
+    }
+}
+
+</style>
+    <style>
+:root {
+    --theme-primary: rgb(41, 170, 227);
+    --theme-primary-transparent: rgba(41, 170, 227, 0.3);
+    --theme-secondary: rgb(0, 96, 128);
+    --theme-dark: #212121;
+    --theme-err: #d32f2f;
+    --theme-err-trans: rgb(224, 110, 110);
+    --theme-warn: rgb(255, 165, 0);
+    --theme-warn-trans: rgb(255, 192, 77);
+    --theme-ok-trans: rgba(41, 170, 227, 0.5);
+    --theme-ok: var(--theme-primary);
+    --animation-slow: 2s;
+    --animation-normal: calc(var(--animation-slow) / 2);
+    --animation-fast: calc(var(--animation-slow) / 3);
+    --icon-width: 3rem;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+td,
+th {
+    border-radius: 0; /* override */
+}
+
+.sparse-col {
+    margin-bottom: 2vh;
+}
+
+.pagination li {
+    height: 25px;
+}
+
+.pagination li > a {
+    padding: 0 5px;
+    font-size: 1rem;
+    line-height: 25px;
+}
+
+.pagination li.active {
+    background-color: var(--theme-ok);
+}
+
+.collection:empty {
+    border: none;
+}
+
+.overlay {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    background-color: #0000001a;
+    justify-content: center;
+}
+
+.badgelist {
+    display: flex;
+    float: right;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+/* pinning tabs to the top */
+.tabs {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 1vh;
+    left: 0;
+    z-index: 9998; /* should be under loader */
+    display: flex;
+    height: unset;
+    box-shadow: 0px 10px 5px -10px lightgrey, 0px -1vh white;
+}
+
+/* next element after tabs */
+.tabs + * {
+    position: relative;
+    top: 4vh;
+}
+
+/* tab item */
+.tabs .tab {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: -webkit-fit-content;
+    min-width: -moz-fit-content;
+    min-width: fit-content;
+}
+
+/* tab handle */
+.tabs button {
+    height: 100%;
+    width: 100%;
+    padding: 0 2vw;
+    background-color: unset;
+    border: none;
+    font-size: medium;
+}
+
+/* active state of the tab */
+.tabs .tab.active {
+    background-color: var(--theme-primary-transparent) !important;
+}
+
+.theme-hov:focus {
+    background-color: var(--theme-primary-transparent) !important;
+}
+
+.theme-txt {
+    color: var(--theme-primary) !important;
+}
+
+.theme-bkg {
+    background-color: var(--theme-primary) !important;
+}
+
+.theme-err {
+    background-color: var(--theme-err) !important;
+}
+
+.theme-dark {
+    background-color: var(--theme-dark) !important;
+}
+
+.theme-bkg-sec {
+    background-color: var(--theme-secondary) !important;
+}
+
+.theme-txt {
+    color: var(--theme-primary) !important;
+}
+
+.fullwidth {
+    width: 100% !important;
+}
+
+.fullheight {
+    height: 100%;
+}
+
+.btn-margin-fix {
+    margin-left: 0 !important;
+}
+
+.hidden {
+    visibility: hidden !important;
+}
+
+.removed {
+    display: none !important;
+}
+
+.transparent {
+    opacity: 0;
+}
+
+.go-opaque {
+    -webkit-animation: goOpaque var(--animation-normal) linear 0s normal forwards;
+            animation: goOpaque var(--animation-normal) linear 0s normal forwards;
+}
+
+@-webkit-keyframes goOpaque {
+    0% {
+        opacity: 0;
+    }
+
+    33% {
+        opacity: calc(100% / 3);
+    }
+
+    66% {
+        opacity: calc(100% / 3 * 2);
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes goOpaque {
+    0% {
+        opacity: 0;
+    }
+
+    33% {
+        opacity: calc(100% / 3);
+    }
+
+    66% {
+        opacity: calc(100% / 3 * 2);
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* fixes autocomplete input appearing centered */
+div.input-field.autocomplete-wrap {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* required for checkboxes to be positioned precisely */
+label.shift-right {
+    margin-left: 6px;
+}
+
+.collapsible .row {
+    counter-reset: collapsible;
+}
+
+.collapsible .row .col {
+    counter-increment: collapsible;
+}
+
+.collapsible .row .col::before {
+    content: counter(collapsible) " ";
+}
+
+/* collapsible headers inside small data tables */
+tr[data-small="true"] > td .collapsible-header {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* small row data tables */
+tr[data-small="true"] > td {
+    padding: 0.5vh;
+}
+
+/* hidden data table rows */
+tr[data-hidden="true"] {
+    display: none;
+}
+
+/* extra margin between Discounter and calculator lists */
+.calculator-groups {
+    margin-bottom: 4vh;
+}
+
+/* pinning preloader to the top */
+.progress {
+    position: fixed;
+    z-index: 9999;
+}
+
+/* map viewer adjustments */
+.map_viewer iframe {
+    width: 100%;
+    min-height: 50vh;
+}
+
+.map_viewer h4 {
+    font-size: 1.5rem;
+    margin-top: 3vh;
+}
+
+.modal .modal-content {
+    padding: 0;
+}
+
+/* styles for very narrow screens */
+@media screen and (max-width: 360px) {
+    .badgelist {
+        float: none;
+    }
+
+    .tabs .tab {
+        flex-basis: calc(100% / 3);
+    }
+}
+
+/* styles for medium-sized screens */
+@media screen and (max-width: 720px) {
+    .tabs .tab {
+        flex-basis: calc(100% / 5)
+    }
+}
+
+/* styles for large-sized screens */
+@media screen and (max-width: 1080px) {
+    .tabs .tab {
+        flex-basis: calc(100% / 8)
+    }
+}
+
+</style>
+</head>
+
+<body>
+    <div id="main" class="vertical-container">
+        <div id="logo" class="logo-container">
+            <img src="https://drive.google.com/thumbnail?id=1VGXdTj5sb4g7mIdxZylgI0k3ro-RfCAq"
+                alt="Pikes Peak Auto Detail logo" class="bw-invert">
+        </div>
+        <div class="horizontal-container removed">
+            <button id="manual-redirect" class="signin-button">Open the dashboard</button>
+        </div>
+        <div id="signin-options">
+            <div id="signin-google" class="horizontal-container signin-option">
+                <noscript class="text-center">
+                    <div class="signin-desc">
+                        Google Sign-In is not available with JavaScript turned off
+                    </div>
+                </noscript>
+                <div class="signin-logo removed">
+                    <img src="/pikes-peak-dashboard.github.io/g-logo.png" alt="Google logo">
+                </div>
+                <div class="signin-desc uppercase removed">
+                    Sign-In with Google
+                </div>
+            </div>
+        </div>
+        <div id="signin-reason" class="text-center"></div>
+    </div>
+
+    <script>
+!function o(r,i,a){function c(t,e){if(!i[t]){if(!r[t]){var n="function"==typeof require&&require;if(!e&&n)return n(t,!0);if(s)return s(t,!0);throw(e=new Error("Cannot find module '"+t+"'")).code="MODULE_NOT_FOUND",e}n=i[t]={exports:{}},r[t][0].call(n.exports,function(e){return c(r[t][1][e]||e)},n,n.exports,o,r,i,a)}return i[t].exports}for(var s="function"==typeof require&&require,e=0;e<a.length;e++)c(a[e]);return c}({1:[function(e,t,n){"use strict";var o=this&&this.__awaiter||function(e,a,c,s){return new(c=c||Promise)(function(n,t){function o(e){try{i(s.next(e))}catch(e){t(e)}}function r(e){try{i(s.throw(e))}catch(e){t(e)}}function i(e){var t;e.done?n(e.value):((t=e.value)instanceof c?t:new c(function(e){e(t)})).then(o,r)}i((s=s.apply(e,a||[])).next())})},s=this&&this.__generator||function(o,r){var i,a,c,s={label:0,sent:function(){if(1&c[0])throw c[1];return c[1]},trys:[],ops:[]},e={next:t(0),throw:t(1),return:t(2)};return"function"==typeof Symbol&&(e[Symbol.iterator]=function(){return this}),e;function t(n){return function(e){var t=[n,e];if(i)throw new TypeError("Generator is already executing.");for(;s;)try{if(i=1,a&&(c=2&t[0]?a.return:t[0]?a.throw||((c=a.return)&&c.call(a),0):a.next)&&!(c=c.call(a,t[1])).done)return c;switch(a=0,(t=c?[2&t[0],c.value]:t)[0]){case 0:case 1:c=t;break;case 4:return s.label++,{value:t[1],done:!1};case 5:s.label++,a=t[1],t=[0];continue;case 7:t=s.ops.pop(),s.trys.pop();continue;default:if(!(c=0<(c=s.trys).length&&c[c.length-1])&&(6===t[0]||2===t[0])){s=0;continue}if(3===t[0]&&(!c||t[1]>c[0]&&t[1]<c[3])){s.label=t[1];break}if(6===t[0]&&s.label<c[1]){s.label=c[1],c=t;break}if(c&&s.label<c[2]){s.label=c[2],s.ops.push(t);break}c[2]&&s.ops.pop(),s.trys.pop();continue}t=r.call(o,s)}catch(e){t=[6,e],a=0}finally{i=c=0}if(5&t[0])throw t[1];return{value:t[0]?t[1]:void 0,done:!0}}}},l=function(e,t){return location.replace("".concat(location.href.replace(location.search,""),"webapp.html?id=").concat(e,"&client=").concat(t))},r=function(c){return o(void 0,void 0,void 0,function(){var t,n,o,r,i,a;return s(this,function(e){switch(e.label){case 0:return(i=c.getBasicProfile(),r=i.getName(),i=i.getEmail(),console.debug({name:r,email:i}),r=c.getAuthResponse().id_token,o=new URLSearchParams(location.search),t=o.get("id"),n=o.get("client"),t&&n)?((o=new URL("/macros/s/".concat(t,"/exec"),"https://script.google.com")).search=new URLSearchParams({path:"check"}).toString(),[4,fetch(o.toString(),{mode:"cors",method:"POST",body:JSON.stringify({id_token:r,email:i})})]):[2,u("Missing Web App ID")];case 1:return[4,e.sent().json()];case 2:return e.sent()?(o=document.getElementById("manual-redirect"),r=document.getElementById("signin-options"),i=document.getElementById("signin-reason"),o&&r&&(o.addEventListener("click",function(){return l(t,n)}),i&&(i.textContent="If redirect did not happen automatically, click the button above"),null!==(a=o.parentElement)&&void 0!==a&&a.classList.remove("removed"),r.classList.add("removed")),[2,l(t,n)]):[2,u("Access Denied")]}})})},u=function(e){console.log(e);var t=document.getElementById("signin-google");if(t){t.classList.add("failed");var n=document.getElementById("signin-reason");if(n){if("object"==typeof e&&"error"in e&&"popup_closed_by_user"===e.error)return t.classList.remove("failed"),void(n.textContent="Sign-In aborted, please retry");n.classList.add("text-failure"),n.textContent=e.toString()}}},i="Failed to load Google Sign-In";window.addEventListener("unhandledrejection",function(e){e.preventDefault(),console.log(e);e=e.reason;"error"in e&&"idpiframe_initialization_failed"===e.error&&u(i)}),window.addEventListener("load",function(){return o(void 0,void 0,void 0,function(){return s(this,function(e){switch(e.label){case 0:return[4,new Promise(function(e,t){var n=document.createElement("script");n.src="https://apis.google.com/js/api:client.js",n.async=!0,n.addEventListener("load",e),n.addEventListener("error",t),document.body.prepend(n)})];case 1:return e.sent(),gapi.load("auth2",function(){return o(void 0,void 0,void 0,function(){var t,n;return s(this,function(e){switch(e.label){case 0:return[4,function(){var e=document.getElementById("signin-google");if(e){e.querySelectorAll("[class^=signin]").forEach(function(e){return e.classList.remove("removed")});var t=gapi.auth2.init({scope:["https://www.googleapis.com/auth/gmail.send","https://www.googleapis.com/auth/drive","https://www.googleapis.com/auth/calendar.readonly","https://www.googleapis.com/auth/documents","https://www.googleapis.com/auth/spreadsheets","https://www.googleapis.com/auth/calendar.events","https://www.googleapis.com/auth/script.scriptapp","https://www.googleapis.com/auth/script.container.ui","https://www.googleapis.com/auth/script.external_request"].join(" "),client_id:"".concat(new URLSearchParams(location.search).get("client"),".apps.googleusercontent.com")});if(t)return t.attachClickHandler(e,{},r,u),t;console.debug("Failed to get auth instance")}else console.debug("Missing Google Sign-In container")}()];case 1:return(n=e.sent())?(t=n.isSignedIn,n=n.currentUser,t.get()&&r(n.get()),[2]):[2,u(i)]}})})}),[2]}})})})},{}]},{},[1]);
+</script>
+</body>
+
+</html>

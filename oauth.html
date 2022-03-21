@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base target="_top" />
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Session</title>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons" />
+
+
+        <style>
+:root {
+    --gap-v: 2vh;
+    --gap-h: 2vw;
+    --theme-font: Roboto, Arial, sans-serif;
+    --theme-primary: rgb(41, 170, 227);
+    --theme-err: #d32f2f;
+    --sigin-pad: 8px;
+    --font-base: 0.8rem;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    font-family: var(--theme-font);
+}
+
+.horizontal-container, .vertical-container {
+    display: flex;
+    align-items: center;
+}
+
+.horizontal-container {
+    flex-direction: row;
+    gap: var(--gap-h);
+}
+
+.vertical-container {
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--gap-v);
+    height: 100%;
+}
+
+.vertical-container>* {
+    width: 230px;
+}
+
+.logo-container {
+    text-align: center;
+}
+
+.logo-container>img {
+    width: 180px;
+}
+
+.abcRioButton {
+    width: 100% !important;
+}
+
+.signin-logo {
+    height: 30px;
+    background: url('/identity/sign-in/g-normal.png') transparent 5px 50% no-repeat;
+}
+
+.signin-logo img {
+    width: 30px;
+}
+
+.signin-button {
+    border: none;
+    width: 100%;
+    height: 48px;
+    padding: var(--sigin-pad);
+    background-color: var(--theme-primary);
+    color: white;
+    font-size: calc(var(--font-base) * 1.2);
+}
+
+.signin-button:hover {
+    background-color: var(--theme-secondary);
+}
+
+.signin-desc {
+    font-size: var(--font-base);
+    font-weight: 600;
+    color: rgba(0,0,0,0.5);
+}
+
+.signin-option {
+    gap: var(--sigin-pad);
+    border: 1px solid rgba(0,0,0,0.25);
+    padding: var(--sigin-pad);
+}
+
+.signin-option.failed {
+    pointer-events: none;
+    border-color: var(--theme-err);
+}
+
+.signin-option.failed .signin-desc {
+    color: var(--theme-err);
+}
+
+.signin-option:hover {
+    cursor: pointer;
+}
+
+.signin-option:active, 
+.signin-option:hover {
+    border-color: var(--theme-primary);
+}
+
+.signin-option:active > *,
+.signin-option:hover > * {
+    color: var(--theme-primary);
+}
+</style>
+        <style>
+span.badge.new {
+    width: 100%;
+    margin: 0 0 8px 0;
+}
+
+/* unifies overall collapsible style with table row/cell */
+td .collapsible {
+    box-shadow: none;
+    border: none;
+    margin: 0;
+}
+
+.keyboard-focused .collapsible-header:focus {
+    background: inherit;
+}
+
+/* beautifies report table captions (slightly elevated headers) */
+table caption {
+    margin-bottom: 1vh;
+    text-align: left;
+    font-size: 1.5rem;
+    padding: 0.5vh;
+}
+
+/* adds borders to grids inside collapsibles inside table cells for readability */
+td .collapsible .col {
+    border: 1px solid #ddd;
+    border-width: 0 0 0 1px;
+}
+
+/* fixes background if :hover is set on row/cell */
+td .collapsible-header {
+    background: inherit;
+}
+
+/* theme button focus state background-color */
+button:focus {
+    background-color: var(--theme-primary);
+}
+
+/* theme background-color */
+.btn,
+.datepicker-date-display,
+.progress .indeterminate {
+    background-color: var(--theme-primary);
+}
+
+/* theme button hover/focus background-color */
+.btn:hover,
+.btn-large:hover,
+.btn-small:hover,
+.btn:focus,
+.btn-large:focus,
+.btn-small:focus,
+.btn-floating:focus {
+    background-color: var(--theme-secondary);
+}
+
+/* theme focus transparent background-color */
+.datepicker-day-button:focus {
+    background-color: var(--theme-primary-transparent);
+}
+
+/* theme datepicker selected date background-color */
+.datepicker-table td.is-selected {
+    background-color: var(--theme-primary);
+}
+
+/* theme text color for components */
+.btn-flat,
+.done,
+.datepicker-table td.is-today,
+.dropdown-content li > a,
+.dropdown-content li > span,
+.secondary-content,
+.input-field .prefix.active {
+    color: var(--theme-primary);
+}
+
+/* theme select bottom underlining on focus */
+.select-wrapper input.select-dropdown:focus {
+    border-bottom: 1px solid var(--theme-primary);
+}
+
+/* theme background color of the right part of the checkmark */
+input[type="checkbox"].filled-in:checked + span:not(.lever):after {
+    border: 2px solid var(--theme-primary);
+    background-color: var(--theme-primary);
+}
+
+/* theme background color of the left part of the checkmark */
+input[type="checkbox"]:checked + span:not(.lever):before {
+    border-right: 2px solid var(--theme-primary);
+    border-bottom: 2px solid var(--theme-primary);
+}
+
+/* input focus underline color */
+input:not([type]):focus:not([readonly]),
+input[type="text"]:not(.browser-default):focus:not([readonly]),
+input[type="password"]:not(.browser-default):focus:not([readonly]),
+input[type="email"]:not(.browser-default):focus:not([readonly]),
+input[type="url"]:not(.browser-default):focus:not([readonly]),
+input[type="time"]:not(.browser-default):focus:not([readonly]),
+input[type="date"]:not(.browser-default):focus:not([readonly]),
+input[type="datetime"]:not(.browser-default):focus:not([readonly]),
+input[type="datetime-local"]:not(.browser-default):focus:not([readonly]),
+input[type="tel"]:not(.browser-default):focus:not([readonly]),
+input[type="number"]:not(.browser-default):focus:not([readonly]),
+input[type="search"]:not(.browser-default):focus:not([readonly]),
+textarea.materialize-textarea:focus:not([readonly]) {
+    border-bottom: 1px solid var(--theme-primary);
+    box-shadow: 0 1px 0 0 var(--theme-primary);
+}
+
+/* input focus label color */
+input:not([type]):focus:not([readonly]) + label,
+input[type="text"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="password"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="email"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="url"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="time"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="date"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="datetime"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="datetime-local"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="tel"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="number"]:not(.browser-default):focus:not([readonly]) + label,
+input[type="search"]:not(.browser-default):focus:not([readonly]) + label,
+textarea.materialize-textarea:focus:not([readonly]) + label {
+    color: var(--theme-primary);
+}
+
+</style>
+        <style>
+.removed {
+    display: none;
+}
+
+.fullvw {
+    width: 100vw;
+}
+
+.fullvh {
+    height: 100vh;
+}
+
+.wrapping {
+    flex-wrap: wrap;
+}
+
+.color-trans {
+    transition: color var(--animation-normal);
+}
+
+.success {
+    background-color: var(--theme-primary);
+}
+
+.text-success {
+    color: var(--theme-primary);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.warning {
+    background-color: var(--theme-warn);
+}
+
+.text-warning {
+    color: var(--theme-warn);
+}
+
+.failure {
+    background-color: var(--theme-err);
+}
+
+/* applies a filter that inverts black and white parts of the image */
+.bw-invert {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* scales element down to 3/4 */
+.scale-3-4 {
+    transform: scale(0.75);
+}
+
+.text-failure {
+    color: var(--theme-err);
+}
+
+.clear-btn {
+    opacity: 0;
+    transition: opacity 0.2s linear;
+}
+
+/* offsets buttons on icon inputs */
+i + input ~ button {
+    left: var(--icon-width);
+}
+
+.loading:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-animation: ellipsis steps(4, end) var(--animation-slow) infinite;
+            animation: ellipsis steps(4, end) var(--animation-slow) infinite;
+    content: "\2026"; /* ascii code for the ellipsis character */
+    width: 0px;
+}
+
+/* for elements with camelcase text */
+.camelcase::first-letter {
+    text-transform: uppercase;
+}
+.camelcase:not(::first-letter) {
+    text-transform: lowercase;
+}
+
+/* for elements with uppercase text */
+.uppercase {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* for textual annotation elements */
+.annotation.annotation {
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+}
+
+@-webkit-keyframes ellipsis {
+    to {
+        width: 1em;
+    }
+}
+
+@keyframes ellipsis {
+    to {
+        width: 1em;
+    }
+}
+
+</style>
+        <style>
+:root {
+    --theme-primary: rgb(41, 170, 227);
+    --theme-primary-transparent: rgba(41, 170, 227, 0.3);
+    --theme-secondary: rgb(0, 96, 128);
+    --theme-dark: #212121;
+    --theme-err: #d32f2f;
+    --theme-err-trans: rgb(224, 110, 110);
+    --theme-warn: rgb(255, 165, 0);
+    --theme-warn-trans: rgb(255, 192, 77);
+    --theme-ok-trans: rgba(41, 170, 227, 0.5);
+    --theme-ok: var(--theme-primary);
+    --animation-slow: 2s;
+    --animation-normal: calc(var(--animation-slow) / 2);
+    --animation-fast: calc(var(--animation-slow) / 3);
+    --icon-width: 3rem;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+
+td,
+th {
+    border-radius: 0; /* override */
+}
+
+.sparse-col {
+    margin-bottom: 2vh;
+}
+
+.pagination li {
+    height: 25px;
+}
+
+.pagination li > a {
+    padding: 0 5px;
+    font-size: 1rem;
+    line-height: 25px;
+}
+
+.pagination li.active {
+    background-color: var(--theme-ok);
+}
+
+.collection:empty {
+    border: none;
+}
+
+.overlay {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    background-color: #0000001a;
+    justify-content: center;
+}
+
+.badgelist {
+    display: flex;
+    float: right;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+/* pinning tabs to the top */
+.tabs {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 1vh;
+    left: 0;
+    z-index: 9998; /* should be under loader */
+    display: flex;
+    height: unset;
+    box-shadow: 0px 10px 5px -10px lightgrey, 0px -1vh white;
+}
+
+/* next element after tabs */
+.tabs + * {
+    position: relative;
+    top: 4vh;
+}
+
+/* tab item */
+.tabs .tab {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: -webkit-fit-content;
+    min-width: -moz-fit-content;
+    min-width: fit-content;
+}
+
+/* tab handle */
+.tabs button {
+    height: 100%;
+    width: 100%;
+    padding: 0 2vw;
+    background-color: unset;
+    border: none;
+    font-size: medium;
+}
+
+/* active state of the tab */
+.tabs .tab.active {
+    background-color: var(--theme-primary-transparent) !important;
+}
+
+.theme-hov:focus {
+    background-color: var(--theme-primary-transparent) !important;
+}
+
+.theme-txt {
+    color: var(--theme-primary) !important;
+}
+
+.theme-bkg {
+    background-color: var(--theme-primary) !important;
+}
+
+.theme-err {
+    background-color: var(--theme-err) !important;
+}
+
+.theme-dark {
+    background-color: var(--theme-dark) !important;
+}
+
+.theme-bkg-sec {
+    background-color: var(--theme-secondary) !important;
+}
+
+.theme-txt {
+    color: var(--theme-primary) !important;
+}
+
+.fullwidth {
+    width: 100% !important;
+}
+
+.fullheight {
+    height: 100%;
+}
+
+.btn-margin-fix {
+    margin-left: 0 !important;
+}
+
+.hidden {
+    visibility: hidden !important;
+}
+
+.removed {
+    display: none !important;
+}
+
+.transparent {
+    opacity: 0;
+}
+
+.go-opaque {
+    -webkit-animation: goOpaque var(--animation-normal) linear 0s normal forwards;
+            animation: goOpaque var(--animation-normal) linear 0s normal forwards;
+}
+
+@-webkit-keyframes goOpaque {
+    0% {
+        opacity: 0;
+    }
+
+    33% {
+        opacity: calc(100% / 3);
+    }
+
+    66% {
+        opacity: calc(100% / 3 * 2);
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes goOpaque {
+    0% {
+        opacity: 0;
+    }
+
+    33% {
+        opacity: calc(100% / 3);
+    }
+
+    66% {
+        opacity: calc(100% / 3 * 2);
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+/* fixes autocomplete input appearing centered */
+div.input-field.autocomplete-wrap {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* required for checkboxes to be positioned precisely */
+label.shift-right {
+    margin-left: 6px;
+}
+
+.collapsible .row {
+    counter-reset: collapsible;
+}
+
+.collapsible .row .col {
+    counter-increment: collapsible;
+}
+
+.collapsible .row .col::before {
+    content: counter(collapsible) " ";
+}
+
+/* collapsible headers inside small data tables */
+tr[data-small="true"] > td .collapsible-header {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* small row data tables */
+tr[data-small="true"] > td {
+    padding: 0.5vh;
+}
+
+/* hidden data table rows */
+tr[data-hidden="true"] {
+    display: none;
+}
+
+/* extra margin between Discounter and calculator lists */
+.calculator-groups {
+    margin-bottom: 4vh;
+}
+
+/* pinning preloader to the top */
+.progress {
+    position: fixed;
+    z-index: 9999;
+}
+
+/* map viewer adjustments */
+.map_viewer iframe {
+    width: 100%;
+    min-height: 50vh;
+}
+
+.map_viewer h4 {
+    font-size: 1.5rem;
+    margin-top: 3vh;
+}
+
+.modal .modal-content {
+    padding: 0;
+}
+
+/* styles for very narrow screens */
+@media screen and (max-width: 360px) {
+    .badgelist {
+        float: none;
+    }
+
+    .tabs .tab {
+        flex-basis: calc(100% / 3);
+    }
+}
+
+/* styles for medium-sized screens */
+@media screen and (max-width: 720px) {
+    .tabs .tab {
+        flex-basis: calc(100% / 5)
+    }
+}
+
+/* styles for large-sized screens */
+@media screen and (max-width: 1080px) {
+    .tabs .tab {
+        flex-basis: calc(100% / 8)
+    }
+}
+
+</style>
+
+        <style>
+h1 {
+    font-size: 3rem;
+}
+
+</style>
+    </head>
+
+    <noscript>
+        <p class="flow-text">Unfortunately, the login flow cannot be finished with scripts disabled</p>
+    </noscript>
+
+    <body>
+        <p id="failure" class="hidden">Could not save login credentials :(</p>
+
+        <div id="success" class="hidden container">
+            <h1>Successfully authorized! </h1>
+            <p class="flow-text">You can close the tab now as you would normally or by clicking the button below</p>
+            <button id="close" class="waves-effect waves-ligth btn"> Close </button>
+        </div>
+
+        <script async crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script async crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>
+<script async crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
+<script async crossorigin="anonymous" src="https://apis.google.com/js/api:client.js"></script>
+
+
+        <script>
+!function r(o,i,s){function u(n,e){if(!i[n]){if(!o[n]){var t="function"==typeof require&&require;if(!e&&t)return t(n,!0);if(l)return l(n,!0);throw(e=new Error("Cannot find module '"+n+"'")).code="MODULE_NOT_FOUND",e}t=i[n]={exports:{}},o[n][0].call(t.exports,function(e){return u(o[n][1][e]||e)},t,t.exports,r,o,i,s)}return i[n].exports}for(var l="function"==typeof require&&require,e=0;e<s.length;e++)u(s[e]);return u}({1:[function(e,n,t){"use strict";var r,o;r=window,o=document,r.addEventListener("load",function(){M.AutoInit();try{localStorage.setItem("kads-session","<?= session ?>")}catch(e){console.debug("session",{error:e});var n=o.getElementById("failure");return void(null!=n&&n.classList.remove("hidden"))}n=o.getElementById("close"),null!=n&&n.addEventListener("click",function(){var e;null!==(e=window.top)&&void 0!==e&&e.close()}),n=o.getElementById("success");null!=n&&n.classList.remove("hidden")})},{}]},{},[1]);
+</script>
+    </body>
+</html>
